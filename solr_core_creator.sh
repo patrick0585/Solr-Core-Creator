@@ -29,8 +29,8 @@ SOLRHOME="/opt/solr-5.3.2"
 SOLRBINDIR="$SOLRHOME/bin"
 SOLRBIN="$SOLRBINDIR/solr"
 SOLRCORES="$SOLRHOME/server/solr"
-SOLRCONFDIR="/home/xgwskow/projects/shops/shop217268/solr5/entw/conf"
-SOLRLIBDIR="/home/xgwskow/projects/shops/shop217268/solr5/entw/lib"
+SOLRCONFDIR=""
+SOLRLIBDIR=""
 SOLRCORENAME=""
 SOLRRESTARTFLAG=true
 
