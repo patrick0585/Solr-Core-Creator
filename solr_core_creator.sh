@@ -3,16 +3,16 @@
 #
 #          FILE:  solr_core_creator.sh
 #
-#         USAGE:  ./solr_core_creator.sh --core <CORENAME>
+#         USAGE:  ./solr_core_creator.sh --core <CORENAME> --conf <CONF PATH> --lib <LIB PATH
 #
 #   DESCRIPTION:  simple solr core creation
 #
-#       OPTIONS:  -h --help	help function
-#		  -c --conf	link solr configuration path to the new core
-#		  -l --lib	link solr library path to the new core
-#		  --solrpath	set the solr home path
-#		  --restart	restart solr after core creation. default is 'true'
-#		  
+#       OPTIONS:  -h --help     help function
+#                 -c --conf     link solr configuration path to the new core
+#                 -l --lib      link solr library path to the new core
+#                 --solrpath    set the solr home path
+#                 --restart     restart solr after core creation. default is 'true'
+#                 
 #  REQUIREMENTS:  ---
 #          BUGS:  ---
 #         NOTES:  ---
@@ -39,11 +39,11 @@ usage="$(basename "$0") [--core, --conf, --lib, --restart]
 -- program to create a solr core --
 
 where:
-    -c, --conf		solr configuration path for the core	
-    -l, --lib		solr library path for the core
-    --restart		set TRUE to restart solr after creation of a solr core
-    --core		set the name for the new solr core
-    --solrpath		set the solr home path
+    -c, --conf          solr configuration path for the core    
+    -l, --lib           solr library path for the core
+    --restart           set TRUE to restart solr after creation of a solr core
+    --core              set the name for the new solr core
+    --solrpath          set the solr home path
 
 "
 
@@ -66,7 +66,7 @@ case $key in
     SOLRRESTARTFLAG="$2"
     shift
     ;;
- 
+
     --core)
     SOLRCORENAME="$2"
     shift
@@ -92,11 +92,34 @@ shift
 done
 
 # check if core name was set
-if [ -z "$SOLRCORENAME" ] || [ -z "$SOLRHOME" ];
+if [ -z "$SOLRCORENAME" ];
 then
-    echo "no corename or solr-home set!"
+    echo "no corename set!"
     echo "set a corename with --core <NAME>"
-    echo "set solr-home with --solrpath <PATH>"
+    exit 0
+fi
+
+# check if solr home path was set
+if [ -z "$SOLRHOME" ];
+then
+    echo "no solr home path set!"
+    echo "set solr home path with --solrpath <PATH>"
+    exit 0
+fi
+
+# check if solr conf path was set
+if [ -z "$SOLRCONFDIR" ];
+then
+    echo "no solr conf path set!"
+    echo "set solr conf path with --conf <CONF PATH>"
+    exit 0
+fi
+
+# check if solr lib path was set
+if [ -z "$SOLRLIBDIR" ];
+then
+    echo "no solr lib path set!"
+    echo "set solr lib  path with --lib  <LIB PATH>"
     exit 0
 fi
 
@@ -110,48 +133,48 @@ then
     exit
 else
     echo "... start creating solr-core '$SOLRCORENAME'"
-    
+
     # try to create solr directory
     if  sudo mkdir -p $SOLRDIR ;
     then
         echo ".... created directory: $SOLRCORENAME"
-	
-	# create data directory inside solr-core directory
-	if sudo mkdir -p "$SOLRDIR/data" ;
+
+        # create data directory inside solr-core directory
+        if sudo mkdir -p "$SOLRDIR/data" ;
         then
-	    echo ".... created data-directory"
-	else
-	    echo ".... error creating data-directory"
-	fi
-	
-	# fill core.properties file with content
-	SOLRPROPCONTENT="name=$SOLRCORENAME"$'\nconfig=solrconfig.xml\nschema=schema.xml\ndataDir=data'
-	sudo sh -c "echo '$SOLRPROPCONTENT' >> $SOLRCOREPROPS"
-	
-	# link conf directory
-	if [ ! -z "$SOLRCONFDIR" ];
-	then
-	   sudo ln -s $SOLRCONFDIR $SOLRDIR
-	fi
+            echo ".... created data-directory"
+        else
+            echo ".... error creating data-directory"
+        fi
 
-	# link lib directory
-	if [ ! -z "$SOLRLIBDIR" ];
-	then
-	   sudo ln -s $SOLRLIBDIR $SOLRDIR
-	fi
+        # fill core.properties file with content
+        SOLRPROPCONTENT="name=$SOLRCORENAME"$'\nconfig=solrconfig.xml\nschema=schema.xml\ndataDir=data'
+        sudo sh -c "echo '$SOLRPROPCONTENT' >> $SOLRCOREPROPS"
 
-	# set rights for the new solr-core
-	sudo sh -c "chown -R solr:solr $SOLRDIR"
+        # link conf directory
+        if [ ! -z "$SOLRCONFDIR" ];
+        then
+            sudo ln -s $SOLRCONFDIR $SOLRDIR
+        fi
 
-	# restart solr if flag is set
-	if [ "$SOLRRESTARTFLAG" = true ];
-	then
-	    sudo sh -c "$SOLRBIN restart"    
-	fi
-	
-	echo "... solr-core '$SOLRCORENAME' successfully created"
+        # link lib directory
+        if [ ! -z "$SOLRLIBDIR" ];
+        then
+            sudo ln -s $SOLRLIBDIR $SOLRDIR
+        fi
+
+        # set rights for the new solr-core
+        sudo sh -c "chown -R solr:solr $SOLRDIR"
+
+        # restart solr if flag is set
+        if [ "$SOLRRESTARTFLAG" = true ];
+        then
+            sudo sh -c "$SOLRBIN restart"
+        fi
+
+        echo "... solr-core '$SOLRCORENAME' successfully created"
     else
         echo ".... error creating directory: $SOLRCORENAME"
         exit
-    fi 
+    fi
 fi
