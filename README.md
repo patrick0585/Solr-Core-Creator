@@ -26,15 +26,8 @@ SOLRHOME="path to solr home directory"
 
 Start the script with a name for the core that will be created
 ```
-./solr_core_creator.sh --core <CORENAME>
+./solr_core_creator.sh --core <CORENAME> --conf <SOLR CONF DIR> --lib <SOLR LIB DIR>
 ```
-### Optional script parameter
-
-Print the help
-```
-./solr_core_creator.sh [-h, --help]
-```
-
 Set the Solr Configration Directory that will be linked as an symbolic 
 link inside the new core
 ```
@@ -45,6 +38,13 @@ Set the Solr Library Directory that will be linked as an symbolic link
 inside the new core
 ```
 ./solr_core_creator.sh --core <CORENAME> [-l, --lib] <LIBRARY DIRECTORY>
+```
+
+### Optional script parameter
+
+Print the help
+```
+./solr_core_creator.sh [-h, --help]
 ```
 
 Activate or Deactivate that solr will restart after the creation of a new 
