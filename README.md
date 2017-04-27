@@ -52,7 +52,11 @@ core. Default value ist "true"
 ```
 ./solr_core_creator.sh --core <CORENAME> --restart false
 ```
-
+### Create a new core with the Solr Binary
+This command works without the script "solr_core_creator"
+```
+./solr create -c core_name
+```
 ## Authors
 
 * **Patrick Kowalik** - *Initial work* - [patrick0585](https://github.com/patrick0585)
